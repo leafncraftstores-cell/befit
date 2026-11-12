@@ -41,41 +41,46 @@ export function HeaderShell({ bar, menu }: { bar: ReactNode; menu: ReactNode }) 
   };
 
   return (
-    <header
-      className={cn(
-        "fixed inset-x-0 top-0 z-50 transition-[background-color,box-shadow] duration-300",
-        scrolled || open
-          ? "bg-brand-black/90 shadow-[0_1px_0_rgb(255_255_255/0.08)] backdrop-blur-md"
-          : "bg-gradient-to-b from-black/60 to-transparent",
-      )}
-    >
-      <a
-        href="#main"
-        className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:bg-brand-red focus:px-4 focus:py-2 focus:text-white"
+    <>
+      <header
+        className={cn(
+          "fixed inset-x-0 top-0 z-50 transition-[background-color,box-shadow] duration-300",
+          scrolled || open
+            ? "bg-brand-black/90 shadow-[0_1px_0_rgb(255_255_255/0.08)] backdrop-blur-md"
+            : "bg-gradient-to-b from-black/60 to-transparent",
+        )}
       >
-        Skip to content
-      </a>
-      <div className="container-x flex h-[var(--header-h)] items-center justify-between gap-4">
-        {bar}
-        <button
-          type="button"
-          onClick={() => setOpen((v) => !v)}
-          aria-expanded={open}
-          aria-controls="mobile-menu"
-          aria-label={open ? "Close menu" : "Open menu"}
-          className="relative z-50 grid size-11 shrink-0 -skew-x-12 place-items-center bg-white/10 text-white transition-colors hover:bg-brand-red xl:hidden"
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:bg-brand-red focus:px-4 focus:py-2 focus:text-white"
         >
-          {open ? <X className="size-6 skew-x-12" /> : <Menu className="size-6 skew-x-12" />}
-        </button>
-      </div>
+          Skip to content
+        </a>
+        <div className="container-x flex h-[var(--header-h)] items-center justify-between gap-4">
+          {bar}
+          <button
+            type="button"
+            onClick={() => setOpen((v) => !v)}
+            aria-expanded={open}
+            aria-controls="mobile-menu"
+            aria-label={open ? "Close menu" : "Open menu"}
+            className="relative z-50 grid size-11 shrink-0 -skew-x-12 place-items-center bg-white/10 text-white transition-colors hover:bg-brand-red xl:hidden"
+          >
+            {open ? <X className="size-6 skew-x-12" /> : <Menu className="size-6 skew-x-12" />}
+          </button>
+        </div>
+      </header>
+      {/* Rendered OUTSIDE <header>: the header's backdrop-filter makes it the containing block
+          for fixed descendants, which would shrink a full-screen menu to the header's height.
+          z-[45]: under the header (logo + close button stay on top), over the bottom bar. */}
       <div
         id="mobile-menu"
         hidden={!open}
         onClick={onMenuClick}
-        className="fixed inset-0 z-40 overflow-y-auto bg-brand-black xl:hidden"
+        className="fixed inset-0 z-[45] h-[100dvh] overflow-y-auto overscroll-contain bg-brand-black xl:hidden"
       >
         {menu}
       </div>
-    </header>
+    </>
   );
 }
